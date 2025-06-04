@@ -87,6 +87,16 @@
     </section>
   </main>
 
+
+
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+  <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "fba5a150243a4e48b0cc489392d26536"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
+
   <script>
     class InputValidationError extends Error {
       constructor(message) {
@@ -96,6 +106,13 @@
         this.name = 'InputValidationError';
       }
     }
+
+    window.onerror = function (message, source, lineno, colno, error) {
+      console.log('A global error occurred:', message);
+      return true; 
+      // prevents default browser error 
+    };
+
 
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
@@ -111,13 +128,16 @@
           // make sure users don't put bad stuff into the inputs
           throw new InputValidationError('HTML tags are not allowed in input.');
         }
-        if (isNaN(firstNum) || isNaN(secondNum)) {
-          // make sure users put numbers only
-          throw new InputValidationError('Only numbers are allowed.');
-        }
         if (operator === "/" && secondNum == "0") {
           // make sure no divide by 0
           throw new Error('Cannot divide by 0');
+        }
+        if (!(firstNum === '' && secondNum === '')) {
+          throw new InputValidationError('Only 1 field is filled.')
+        }
+        else if ((isNaN(firstNum) || isNaN(secondNum))) {
+          // make sure users put numbers only
+          throw new InputValidationError('Only numbers are allowed.');
         }
       }
       catch (err) {
@@ -140,13 +160,13 @@
     button.addEventListener('click', () => {
       switch (button.textContent) {
         case 'Console Log':
-          console.log('console log button');
+          console.log('Console Log Demo');
           break;
         case 'Console Error':
-          console.error('console error button');
+          console.error('Console Error Demo');
           break;
         case 'Console Count':
-          console.count('count label button');
+          console.count('count button');
           break;
         case 'Console Warn':
           console.warn('console warning button');
@@ -184,6 +204,9 @@
         case 'Console Trace':
           console.trace('console trace button:');
           break;
+        case 'Trigger a Global Error':
+          fakeFunction();
+          break
       }
     });
   });
